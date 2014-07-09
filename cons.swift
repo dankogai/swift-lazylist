@@ -1,5 +1,13 @@
 //
 //  cons.swift
+//  lazylist
+//
+//  Created by Dan Kogai on 7/9/14.
+//  Copyright (c) 2014 Dan Kogai. All rights reserved.
+//
+
+//
+//  cons.swift
 //  linkedlist
 //
 //  Created by Dan Kogai on 7/8/14.
@@ -21,7 +29,7 @@ class Cons<T> : Sequence {
     }
     */
     var count:Int {
-        if cdr { return 1 + cdr!.count }
+    if cdr { return 1 + cdr!.count }
         return 1
     }
     var length:Int { return count }
@@ -34,8 +42,8 @@ class Cons<T> : Sequence {
     typealias IndexType = Int
     subscript(idx:Int)->T {
         if idx == 0 { return car }
-        if cdr { return cdr![idx - 1] }
-        fatalError("index too large")
+            if cdr { return cdr![idx - 1] }
+            fatalError("index too large")
     }
 }
 class ConsGenerator<T> : Generator {
@@ -78,7 +86,7 @@ extension Cons {
     }
     func any(cond:(T)->Bool)->Bool {
         if cond(car) {
-           return true
+            return true
         } else {
             if cdr { return cdr!.any(cond) }
         }
@@ -200,6 +208,8 @@ extension Cons {
         return Cons.list(ary)!
     }
 }
+/*
 func list<T>(elems:T...) -> Cons<T> {
     return Cons.list(elems)!
 }
+*/
