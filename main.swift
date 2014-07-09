@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
 
-let ns = lazylist { (i,_) in i }
+let ns = lazylist { (i, _) in i }
 println(ns.take(10))
 println(ns[10])
 println(ns.take(10) == LazyLists.UInts.map{Int($0)}.take(10) )
@@ -24,7 +24,7 @@ println(a100.drop(10).take(10))
 println(a100.drop(90).take(20))
 println(a100.drop(100).take(10))
 /// with seed and maker
-let fibs = lazylist([0,1]) {
-    (i,a) in i < 2 ? i : a[i-2]+a[i-1]
-}
+let fibs = lazylist([0,1]){ (i,a) in a[i-2] + a[i-1] }
 println(fibs.drop(10).take(10))
+let facts = lazylist([1]) { (i, a) in i * a[i-1] }
+println(facts.take(10))

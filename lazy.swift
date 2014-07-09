@@ -45,18 +45,21 @@ class LazyList<T,U> {
     }
     /// returns an array with n elements.
     func take(n:Int) -> [U] {
+        let need = n + self.offset
         var seed = self.seed
         var result:[U] = []
-        var idx = 0
-        while result.count < n + self.offset {
-            if let mk = self.maker { // infinite
-                var m = mk(idx++, seed)
-                if let v = mapper(m) { result.append(v) }
-                if seed.count < idx  { seed.append(m) }
-            } else {            // finite
-                if seed.count <= idx { break }
-                if let v = mapper(seed[idx++]) { result.append(v) }
+        for var i = 0; result.count < need; i++ {
+            // infinite so make elements on demand
+            if let maker = self.maker {
+                if i == seed.count {
+                    seed.append(maker(i, seed))
+                }
             }
+            // finite so break on broke :-)
+            else {
+                if i == seed.count { break }
+            }
+            if let v = mapper(seed[i]) { result.append(v) }
         }
         if self.offset == 0 {
             return result
