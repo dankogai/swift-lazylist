@@ -1,7 +1,7 @@
 swift-lazylist
 ==============
 
-A Haskell-Like Lazy List in [Swift]
+A Haskell-Like Lazy List in [Swift].
 
 [Swift]: https://developer.apple.com/swift/
 
@@ -16,10 +16,17 @@ println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10)) // [1, 9, 25, 49, 81, 121,
 ````
 ### Finite list
 ````swift
-let a100 = lazylist(Array(0..<100)) // [0, 1, 2 ... 99]
-println(a100.drop(10).take(10))   // [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-println(a100.drop(90).take(20))   // [90, 91, 92, 93, 94, 95, 96, 97, 98, 99] -- only 10
-println(a100.drop(100).take(10))  // [] -- no elements left
+let p100 = lazylist(Array(0..<100)) // [0, 1, 2 ... 99]
+println(p100.drop(10).take(10))   // [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+println(p100.drop(90).take(20))   // [90, 91, 92, 93, 94, 95, 96, 97, 98, 99] -- only 10
+println(p100.drop(100).take(10))  // [] -- no elements left
+````
+### Indefinite list -- Lazy list with a terminator
+````swift
+let m100 = lazylist { $0 < 100 ? -$0 : nil } // [0, -1, -2 ... -99]
+println(m100.drop(10).take(10))  // [-10, -11, -12, -13, -14, -15, -16, -17, -18, -19]
+println(m100.drop(90).take(20))  // [-90, -91, -92, -93, -94, -95, -96, -97, -98, -99]
+println(m100.drop(100).take(10)) // []
 ````
 ### Infinite list with seed array
 ````swift
