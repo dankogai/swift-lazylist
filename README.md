@@ -13,6 +13,12 @@ Synopsis
 let ns = lazylist { $0 } // infinite list of natural numbers
 println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
 println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
+/// you can enumurate it in for-in loop so long as you `break` it anyhow
+for (i,v) in enumerate(ns) {
+    if i % 7 != 0 { continue }
+    if v > 42 { break }
+    println("ns[\(i)] = \(v)")
+}
 ````
 ### Finite list
 ````swift
