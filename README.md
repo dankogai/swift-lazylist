@@ -10,7 +10,7 @@ Synopsis
 
 Infinite list
 ````swift
-let ns = lazylist { i, _ in i } // infinite list of natural numbers
+let ns = lazylist { $0 } // infinite list of natural numbers
 println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
 println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
 ````
