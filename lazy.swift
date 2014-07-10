@@ -95,10 +95,6 @@ class LazyList<T,U> {
             }
         }
     }
-    /// just take(i+1) and return the last element
-    subscript(i:Int)->U {
-        return self.take(i+1)[i]
-    }
     /// returns a new lazy list with n elements truncated
     /// -- actually it only sets the offset
     func drop(n:Int) -> LazyList<T,U> {
@@ -106,8 +102,12 @@ class LazyList<T,U> {
             maker:  self.maker,
             seed:   self.seed,
             mapper: self.mapper,
-            offset: n
+            offset: self.offset + n
         )
+    }
+    /// just take(i+1) and return the last element
+    subscript(i:Int)->U {
+        return self.drop(i).take(1)[0]
     }
     /// b..<e -> drop(b) then take (e-b)
     subscript(r:Range<Int>)->[U] {
