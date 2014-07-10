@@ -37,3 +37,11 @@ let primes = lazylist([2,3]) { i, ps in
 }
 println(primes.take(25)) // first 25 prime numbers -- primes less than 100
 ```
+### Inifinite list of repeated values
+
+Simple `{ constant }` does not work. Use `{ i in constant }` to make type inference happy.
+
+```
+let theAnswer = lazylist { i in 42 }
+println(theAnswer.drop(40).take(2)) // [42, 42]
+```
