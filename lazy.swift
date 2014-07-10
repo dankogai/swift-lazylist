@@ -10,7 +10,7 @@ class LazyList<T,U> {
     let seed:[T]
     let mapper:(T->U?)
     let offset:Int
-    /// lazy, inifite, list.
+    /// lazy list.  infinite unless maker is nil
     init(maker:((Int,[T])->T)?, seed:[T],
         mapper:(T->U?), offset:Int = 0) {
         self.maker  = maker
