@@ -7,11 +7,11 @@
 //
 class LazyList<T,U> {
     let maker:((Int,[T])->T)?
-    let seed:[T]
+    let seed:[T]?
     let mapper:(T->U?)
     let offset:Int
     /// lazy list.  infinite unless maker is nil
-    init(maker:((Int,[T])->T)?, seed:[T],
+    init(maker:((Int,[T])->T)?, seed:[T]?,
         mapper:(T->U?), offset:Int = 0) {
         self.maker  = maker
         self.seed   = seed
@@ -45,26 +45,38 @@ class LazyList<T,U> {
     }
     /// returns an array with n elements.
     func take(n:Int) -> [U] {
-        let need = n + self.offset
-        var seed = self.seed
         var result:[U] = []
-        for var i = 0; result.count < need; i++ {
-            // infinite so make elements on demand
-            if let maker = self.maker {
-                if i == seed.count {
-                    seed.append(maker(i, seed))
+        if self.seed {
+            var seed = self.seed!
+            let need = n + self.offset
+            for var i = 0; result.count < need; i++ {
+                // infinite so make elements on demand
+                if let maker = self.maker {
+                    if i == seed.count {
+                        seed.append(maker(i, seed))
+                    }
                 }
+                // finite so break on broke :-)
+                else {
+                    if i == seed.count { break }
+                }
+                if let v = mapper(seed[i]) { result.append(v) }
             }
-            // finite so break on broke :-)
-            else {
-                if i == seed.count { break }
+            if self.offset == 0 {
+                return result
+            } else {
+                return Array(result[self.offset..<result.count])
             }
-            if let v = mapper(seed[i]) { result.append(v) }
-        }
-        if self.offset == 0 {
-            return result
-        } else {
-            return Array(result[self.offset..<result.count])
+        } else { // List without array -- always infinite
+            if let maker = self.maker {
+                for var i = self.offset; result.count < n; i++ {
+                    let m = maker(i, [T]())
+                    if let v = mapper(m) { result.append(v) }
+                }
+                return result
+            } else {
+                fatalError("invalid LazyList")
+            }
         }
     }
     /// just take(i+1) and return the last element
@@ -101,37 +113,37 @@ class LazyLists {
     class var Ints:LazyList<Int,Int> {
         return LazyList (
             maker: {(i,_) in i},
-            seed:  [Int](),
+            seed:  nil,
             mapper:{ $0 }
         )
     }
     class var UInts:LazyList<UInt,UInt> {
         return LazyList (
             maker: {(i,_) in UInt(i)},
-            seed:  [UInt](),
+            seed:  nil,
             mapper:{ $0 }
         )
     }
 }
 /// Factory Functions
-func lazylist<T>(maker:(Int,[T])->T)->LazyList<T,T> {
+func lazylist<T>(maker:(Int,[T]?)->T)->LazyList<T,T> {
     return LazyList (
         maker:maker,
-        seed:[T](),
-        mapper:{$0}
+        seed:nil,
+        mapper:{ $0 }
     )
 }
 func lazylist<T>(seed:[T])->LazyList<T,T> {
     return LazyList (
         maker:nil,
         seed:seed,
-        mapper:{$0}
+        mapper:{ $0 }
     )
 }
 func lazylist<T>(seed:[T], maker:(Int,[T])->T)->LazyList<T,T> {
     return LazyList (
         maker:maker,
         seed:seed,
-        mapper:{$0}
+        mapper:{ $0 }
     )
 }
