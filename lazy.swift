@@ -5,14 +5,18 @@
 //  Created by Dan Kogai on 7/9/14.
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
+enum LazyListMaker<T> {
+    case One(Int->T)
+    case Two((Int, [T])->T)
+}
 class LazyList<T,U> {
-    let maker:((Int,[T])->T)?
+    let maker:LazyListMaker<T>?
     let seed:[T]?
-    let mapper:(T->U?)
+    let mapper:T->U?
     let offset:Int
     /// lazy list.  infinite unless maker is nil
-    init(maker:((Int,[T])->T)?, seed:[T]?,
-        mapper:(T->U?), offset:Int = 0) {
+    init(maker:LazyListMaker<T>?, seed:[T]?,
+        mapper:T->U?, offset:Int = 0) {
         self.maker  = maker
         self.seed   = seed
         self.mapper = mapper
@@ -49,11 +53,18 @@ class LazyList<T,U> {
         if self.seed {
             var seed = self.seed!
             let need = n + self.offset
+            var makertwo:((Int,[T])->T)? = nil
+            if let maker = self.maker {
+                switch maker {
+                case .Two(let two): makertwo = two
+                default: fatalError("Invalid Maker")
+                }
+            }
             for var i = 0; result.count < need; i++ {
-                // infinite so make elements on demand
-                if let maker = self.maker {
+                // if infinite list, fill the seed
+                if makertwo {
                     if i == seed.count {
-                        seed.append(maker(i, seed))
+                        seed.append(makertwo!(i, seed))
                     }
                 }
                 // finite so break on broke :-)
@@ -69,8 +80,13 @@ class LazyList<T,U> {
             }
         } else { // List without array -- always infinite
             if let maker = self.maker {
+                var makerone:(Int->T)?
+                switch maker {
+                case .One(let one): makerone = one
+                default: fatalError("Invalid Maker")
+                }
                 for var i = self.offset; result.count < n; i++ {
-                    let m = maker(i, [T]())
+                    let m = makerone!(i)
                     if let v = mapper(m) { result.append(v) }
                 }
                 return result
@@ -112,23 +128,23 @@ class LazyList<T,U> {
 class LazyLists {
     class var Ints:LazyList<Int,Int> {
         return LazyList (
-            maker: {(i,_) in i},
+            maker: LazyListMaker.One({ $0 }),
             seed:  nil,
             mapper:{ $0 }
         )
     }
     class var UInts:LazyList<UInt,UInt> {
         return LazyList (
-            maker: {(i,_) in UInt(i)},
+            maker: LazyListMaker.One({ UInt($0) }),
             seed:  nil,
             mapper:{ $0 }
         )
     }
 }
 /// Factory Functions
-func lazylist<T>(maker:(Int,[T]?)->T)->LazyList<T,T> {
+func lazylist<T>(maker:Int->T)->LazyList<T,T> {
     return LazyList (
-        maker:maker,
+        maker:LazyListMaker.One(maker),
         seed:nil,
         mapper:{ $0 }
     )
@@ -142,7 +158,7 @@ func lazylist<T>(seed:[T])->LazyList<T,T> {
 }
 func lazylist<T>(seed:[T], maker:(Int,[T])->T)->LazyList<T,T> {
     return LazyList (
-        maker:maker,
+        maker:LazyListMaker.Two(maker),
         seed:seed,
         mapper:{ $0 }
     )

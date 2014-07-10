@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
 
-let ns = lazylist { i, _ in i }
+let ns = lazylist { $0 }
 println(ns.take(10))
 println(ns[10])
 println(ns.take(10) == LazyLists.UInts.map{Int($0)}.take(10) )
+println(LazyLists.Ints.drop(1_000_000_000_000_000)[0])
 println(ns.drop(10).take(10))
 println(ns[5..<10])
 println(ns[5...10])
