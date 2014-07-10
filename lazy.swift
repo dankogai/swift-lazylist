@@ -132,6 +132,15 @@ class LazyList<T,U> {
         )
     }
 }
+extension LazyList : Sequence {
+    func generate() -> GeneratorOf<U> {
+        var idx = 0
+        return GeneratorOf<U> {
+            return self[idx++]
+        }
+    }
+}
+
 /// placeholder class
 class LazyLists {
     class var Ints:LazyList<Int,Int> {

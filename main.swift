@@ -34,9 +34,18 @@ println(m100.drop(10).take(10))
 println(m100.drop(90).take(20))
 println(m100.drop(100).take(10))
 println(m100[100])
+for (i,v) in enumerate(m100) {
+    if i % 10 != 0 { continue }
+    if v < -42 { break }
+    println("m100[\(i)] = \(v)")
+}
 /// with seed and maker
 let fibs = lazylist([0,1]){ i, a in a[i-2] + a[i-1] }
 println(fibs.drop(10).take(10))
+let fibs42 = lazylist([0,1]){ i, a in
+    i < 42 ? a[i-2] + a[i-1] : nil
+}
+println(fibs42.drop(40).take(10))
 let facts = lazylist([1]) { i, a in i * a[i-1] }
 println(facts.take(10))
 let primes = lazylist([2,3]) { i, ps in
