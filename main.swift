@@ -20,6 +20,11 @@ println(ns.filter{$0 % 2 == 1}.take(10))
 println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.take(10))
 println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10))
 println(ns.map{ "a\($0)" }.take(10))
+for (i,v) in enumerate(ns) {
+    if i % 7 != 0 { continue }
+    if v > 42 { break }
+    println("ns[\(i)] = \(v)")
+}
 let theAnswer = lazylist { i in 42 }
 println(theAnswer.drop(40).take(2))
 /// finite list from an array
@@ -34,11 +39,6 @@ println(m100.drop(10).take(10))
 println(m100.drop(90).take(20))
 println(m100.drop(100).take(10))
 println(m100[100])
-for (i,v) in enumerate(m100) {
-    if i % 10 != 0 { continue }
-    if v < -42 { break }
-    println("m100[\(i)] = \(v)")
-}
 /// with seed and maker
 let fibs = lazylist([0,1]){ i, a in a[i-2] + a[i-1] }
 println(fibs.drop(10).take(10))
