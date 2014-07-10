@@ -6,14 +6,6 @@
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
 
-//
-//  cons.swift
-//  linkedlist
-//
-//  Created by Dan Kogai on 7/8/14.
-//  Copyright (c) 2014 Dan Kogai. All rights reserved.
-//
-
 /// like Haskell, this list is immutable
 class Cons<T> : Sequence {
     let car:T
@@ -208,8 +200,3 @@ extension Cons {
         return Cons.list(ary)!
     }
 }
-/*
-func list<T>(elems:T...) -> Cons<T> {
-    return Cons.list(elems)!
-}
-*/
