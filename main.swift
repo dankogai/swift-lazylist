@@ -20,11 +20,20 @@ println(ns.filter{$0 % 2 == 1}.take(10))
 println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.take(10))
 println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10))
 println(ns.map{ "a\($0)" }.take(10))
+let theAnswer = lazylist { i in 42 }
+println(theAnswer.drop(40).take(2))
 /// finite list from an array
-let a100 = lazylist(Array(0..<100))
-println(a100.drop(10).take(10))
-println(a100.drop(90).take(20))
-println(a100.drop(100).take(10))
+let p100 = lazylist(Array(0..<100))
+println(p100.drop(10).take(10))
+println(p100.drop(90).take(20))
+println(p100.drop(100).take(10))
+println(p100[100])
+/// indefinite list -- infinite but with terminator
+let m100 = lazylist { $0 < 100 ? -$0 : nil }
+println(m100.drop(10).take(10))
+println(m100.drop(90).take(20))
+println(m100.drop(100).take(10))
+println(m100[100])
 /// with seed and maker
 let fibs = lazylist([0,1]){ i, a in a[i-2] + a[i-1] }
 println(fibs.drop(10).take(10))

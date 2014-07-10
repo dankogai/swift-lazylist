@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
 enum LazyListMaker<T> {
-    case One(Int->T)
-    case Two((Int, [T])->T)
+    case One(Int->T?)
+    case Two((Int, [T])->T?)
 }
 class LazyList<T,U> {
     let maker:LazyListMaker<T>?
@@ -53,25 +53,29 @@ class LazyList<T,U> {
         if self.seed {
             var seed = self.seed!
             let need = n + self.offset
-            var makertwo:((Int,[T])->T)? = nil
+            // if infinite list, fill the seed
             if let maker = self.maker {
+                var makertwo:(Int,[T])->T?
                 switch maker {
                 case .Two(let two): makertwo = two
                 default: fatalError("Invalid Maker")
                 }
-            }
-            for var i = 0; result.count < need; i++ {
-                // if infinite list, fill the seed
-                if makertwo {
+                for var i = 0; result.count < need; i++ {
                     if i == seed.count {
-                        seed.append(makertwo!(i, seed))
+                        if let m = makertwo(i, seed) {
+                            seed.append(m)
+                        } else {
+                            break
+                        }
                     }
+                    if let v = mapper(seed[i]) { result.append(v) }
                 }
-                // finite so break on broke :-)
-                else {
+            // finite so break on broke :-)
+            } else {
+                for var i = 0; result.count < need; i++ {
                     if i == seed.count { break }
+                    if let v = mapper(seed[i]) { result.append(v) }
                 }
-                if let v = mapper(seed[i]) { result.append(v) }
             }
             if self.offset == 0 {
                 return result
@@ -80,14 +84,17 @@ class LazyList<T,U> {
             }
         } else { // List without array -- always infinite
             if let maker = self.maker {
-                var makerone:(Int->T)?
+                var makerone:Int->T?
                 switch maker {
                 case .One(let one): makerone = one
                 default: fatalError("Invalid Maker")
                 }
                 for var i = self.offset; result.count < n; i++ {
-                    let m = makerone!(i)
-                    if let v = mapper(m) { result.append(v) }
+                    if let m = makerone(i) {
+                        if let v = mapper(m) { result.append(v) }
+                    } else {
+                        break
+                    }
                 }
                 return result
             } else {
@@ -106,8 +113,9 @@ class LazyList<T,U> {
         )
     }
     /// just take(i+1) and return the last element
-    subscript(i:Int)->U {
-        return self.drop(i).take(1)[0]
+    subscript(i:Int)->U? {
+        let a = self.drop(i).take(1)
+        return a.isEmpty ? nil : a[0]
     }
     /// b..<e -> drop(b) then take (e-b)
     subscript(r:Range<Int>)->[U] {
@@ -142,7 +150,7 @@ class LazyLists {
     }
 }
 /// Factory Functions
-func lazylist<T>(maker:Int->T)->LazyList<T,T> {
+func lazylist<T>(maker:Int->T?)->LazyList<T,T> {
     return LazyList (
         maker:LazyListMaker.One(maker),
         seed:nil,
@@ -156,7 +164,7 @@ func lazylist<T>(seed:[T])->LazyList<T,T> {
         mapper:{ $0 }
     )
 }
-func lazylist<T>(seed:[T], maker:(Int,[T])->T)->LazyList<T,T> {
+func lazylist<T>(seed:[T], maker:(Int,[T])->T?)->LazyList<T,T> {
     return LazyList (
         maker:LazyListMaker.Two(maker),
         seed:seed,
