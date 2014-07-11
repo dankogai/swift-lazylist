@@ -42,12 +42,6 @@ println(m100[100])
 /// with seed and maker
 let fibs = lazylist([0,1]){ i, a in a[i-2] + a[i-1] }
 println(fibs.drop(10).take(10))
-let fibs42 = lazylist([0,1]){ i, a in
-    i < 42 ? a[i-2] + a[i-1] : nil
-}
-println(fibs42.drop(40).take(10))
-let facts = lazylist([1]) { i, a in i * a[i-1] }
-println(facts.take(10))
 let primes = lazylist([2,3]) { i, ps in
     for var n = ps[i-1] + 1; true; n++ {
         for p in ps {
@@ -57,3 +51,6 @@ let primes = lazylist([2,3]) { i, ps in
     }
 }
 println(primes.take(25))
+// indefinite list with seed array
+let fact13 = lazylist([1]){ i, a in i < 13 ? i * a[i-1] : nil }
+println(fact13.drop(10).take(10))
