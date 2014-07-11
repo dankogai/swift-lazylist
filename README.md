@@ -13,12 +13,6 @@ Synopsis
 let ns = lazylist { $0 } // infinite list of natural numbers
 println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
 println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.take(10)) // [1, 9, 25, 49, 81, 121, 169, 225, 289, 361]
-/// you can enumurate it in for-in loop so long as you `break` it anyhow
-for (i,v) in enumerate(ns) {
-    if i % 7 != 0 { continue }
-    if v > 42 { break }
-    println("ns[\(i)] = \(v)")
-}
 ````
 ### Finite list
 ````swift
@@ -58,3 +52,24 @@ Simple `{ constant }` does not work. Use `{ i in constant }` to make type infere
 let theAnswer = lazylist { i in 42 }
 println(theAnswer.drop(40).take(2)) // [42, 42]
 ```
+### Caution: Enumerate with care
+
+LazyList conforms to the `Sequence` protocol so it supports for-in loop like this:
+    
+````swift
+/// you can enumurate it in for-in loop so long as you `break` it anyhow
+for (i,v) in enumerate(ns) {
+    if i % 7 != 0 { continue }
+    if v > 42 { break }
+    println("ns[\(i)] = \(v)")
+}
+````
+
+However, this is very inefficient unless the list does not depend on the seed array.
+Such lists:
+
+0. are constructed without seed array
+1. AND  `.filter()` is never applied
+
+The natural number list example above meets that condition until you apply `.filter()`.
+If you are not sure avoid using enumurator directly.  Just `take()` to get an ordinary array
