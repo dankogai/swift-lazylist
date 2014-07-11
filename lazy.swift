@@ -44,8 +44,11 @@ class LazyList<T,U> {
             maker:      maker,
             seed:       seed,
             mapper:     { (t:T) -> V? in
-                if let u = self.mapper(t) { return mapper(u) }
-                else { return nil }
+                if let u = self.mapper(t) {
+                    return mapper(u)
+                } else {
+                    return nil
+                }
             },
             offset:     offset,
             filtered:   filtered
@@ -87,11 +90,13 @@ class LazyList<T,U> {
             let need = n + self.offset
             if let maker = self.maker { // fill the seed
                 let makertwo = maker.getTwo()
-                for var i = seed.count; result.count < need; i++ {
-                    if let m = makertwo(i, seed) {
-                        seed.append(m)
-                    } else {
-                        break
+                for var i = 0; result.count < need; i++ {
+                    if i == seed.count {
+                        if let m = makertwo(i, seed) {
+                            seed.append(m)
+                        } else {
+                            break
+                        }
                     }
                     if let v = mapper(seed[i]) { result.append(v) }
                 }
@@ -110,12 +115,13 @@ class LazyList<T,U> {
                     // enough elements.
                     var seed = [T]()
                     let need = n + self.offset
-                    var i = seed.count
-                    for ; result.count < need; i++ {
-                        if let m = makerone(i) {
-                            seed.append(m)
-                        } else {
-                            break
+                    for var i = 0; result.count < need; i++ {
+                        if i == seed.count {
+                            if let m = makerone(i) {
+                                seed.append(m)
+                            } else {
+                                break
+                            }
                         }
                         if let v = mapper(seed[i]) {
                             result.append(v)

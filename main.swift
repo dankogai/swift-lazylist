@@ -16,9 +16,9 @@ println(ns.drop(10).take(10))
 println(ns[5..<10])
 println(ns[5...10])
 println(ns.map{$0 * $0}.take(10))
-println(ns.filter{$0 % 2 == 1}.take(10))
-println(ns.filter{$0 % 2 == 1}.map{$0 * $0}.drop(5).take(5))
-println(ns.map{$0 * $0}.filter{$0 % 2 == 1}.drop(5).take(5))
+println(ns.filter{$0 % 2 == 0}.take(10))
+println(ns.filter{$0 % 2 == 0}.map{$0 * $0}.drop(5).take(5))
+println(ns.map{$0 * $0}.filter{$0 % 2 == 0}.drop(5).take(5))
 println(ns.map{ "a\($0)" }.take(10))
 for (i,v) in enumerate(ns) {
     if i % 7 != 0 { continue }
