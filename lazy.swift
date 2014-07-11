@@ -8,6 +8,20 @@
 enum LazyListMaker<T> {
     case One(Int->T?)
     case Two((Int, [T])->T?)
+    /// one or none
+    func getOne()->(Int->T?) {
+        switch self{
+        case .One(let one): return one
+        default: fatalError("Does not contain Int->T?")
+        }
+    }
+    /// two or none
+    func getTwo()->((Int, [T])->T?) {
+        switch self{
+        case .Two(let two): return two
+        default: fatalError("Does not contain Int, [T])->T?")
+        }
+    }
 }
 class LazyList<T,U> {
     let maker:  LazyListMaker<T>?
@@ -57,7 +71,7 @@ class LazyList<T,U> {
             offset: self.offset + n
         )
     }
-    /// returns an array with n elements.
+    /// returns an array with upto n elements.
     /// this is where laziness ends
     func take(n:Int)->[U] {
         var result:[U] = []
@@ -65,11 +79,7 @@ class LazyList<T,U> {
             var seed = self.seed!
             let need = n + self.offset
             if let maker = self.maker { // fill the seed
-                var makertwo:(Int,[T])->T?
-                switch maker {
-                case .Two(let two): makertwo = two
-                default: fatalError("Invalid Maker")
-                }
+                let makertwo = maker.getTwo()
                 for var i = 0; result.count < need; i++ {
                     if i == seed.count {
                         if let m = makertwo(i, seed) {
@@ -93,11 +103,7 @@ class LazyList<T,U> {
             }
         } else { // List without array -- always infinite
             if let maker = self.maker {
-                var makerone:Int->T?
-                switch maker {
-                case .One(let one): makerone = one
-                default: fatalError("Invalid Maker")
-                }
+                let makerone = maker.getOne()
                 for var i = self.offset; result.count < n; i++ {
                     if let m = makerone(i) {
                         if let v = mapper(m) { result.append(v) }
