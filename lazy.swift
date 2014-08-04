@@ -5,13 +5,13 @@
 //  Created by Dan Kogai on 7/9/14.
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
-class LazyList<T,U> {
-    let maker:  ((Int, [T])->T?)?
-    let seed:   [T]?
-    let mapper: T->U?
-    let offset: Int
+public class LazyList<T,U> {
+    private let maker:  ((Int, [T])->T?)?
+    private let seed:   [T]?
+    private let mapper: T->U?
+    private let offset: Int
     /// lazy list.  infinite unless maker is nil
-    init(maker:((Int, [T])->T?)?, seed:[T]?, mapper:T->U?,
+    public init(maker:((Int, [T])->T?)?, seed:[T]?, mapper:T->U?,
         offset:Int = 0, filtered:Bool = false) {
             self.maker  = maker
             self.seed   = seed
@@ -19,7 +19,7 @@ class LazyList<T,U> {
             self.offset = offset
     }
     /// creates new mapper and installs it
-    func map<V>(mapper:U->V?)->LazyList<T,V> {
+    public func map<V>(mapper:U->V?)->LazyList<T,V> {
         return LazyList<T,V>(
             maker:      maker,
             seed:       seed,
@@ -35,12 +35,11 @@ class LazyList<T,U> {
     }
     /// installs filter as a mapper
     /// which returns nil on false
-    func filter(judge:U->Bool)->LazyList<T,U> {
+    public func filter(judge:U->Bool)->LazyList<T,U> {
         return LazyList<T,U>(
             maker:  self.maker,
             seed:   {
-                if self.seed { return self.seed! }
-                else         { return [T]() }
+                return self.seed != nil ? self.seed! : [T]()
             }(),
             mapper: { (t:T)-> U? in
                 if let u = self.mapper(t) {
@@ -53,7 +52,7 @@ class LazyList<T,U> {
     }
     /// returns a new lazy list with n elements truncated
     /// -- actually it only sets the offset
-    func drop(n:Int) -> LazyList<T,U> {
+    public func drop(n:Int) -> LazyList<T,U> {
         return LazyList<T,U> (
             maker:      self.maker,
             seed:       self.seed,
@@ -63,9 +62,9 @@ class LazyList<T,U> {
     }
     /// returns an array with upto n elements.
     /// this is where laziness ends
-    func take(n:Int)->[U] {
+    public  func take(n:Int)->[U] {
         var result:[U] = []
-        if self.seed {
+        if self.seed != nil {
             var seed = self.seed!
             let need = n + self.offset
             if let maker = self.maker { // fill the seed
@@ -101,17 +100,17 @@ class LazyList<T,U> {
             : Array(result[self.offset..<result.count])
     }
     /// just take(i+1) and return the last element
-    subscript(i:Int)->U? {
+    public subscript(i:Int)->U? {
         let a = self.drop(i).take(1)
         return a.isEmpty ? nil : a[0]
     }
     /// b..<e -> drop(b) then take (e-b)
-    subscript(r:Range<Int>)->[U] {
+    public  subscript(r:Range<Int>)->[U] {
         let b = r.startIndex
         let e = r.endIndex
         return self.drop(b).take(e-b)
     }
-    func copy()->LazyList<T,U> {
+    public  func copy()->LazyList<T,U> {
         return LazyList<T,U> (
             maker:      self.maker,
             seed:       self.seed,
@@ -120,8 +119,8 @@ class LazyList<T,U> {
         )
     }
 }
-extension LazyList : Sequence {
-    func generate() -> GeneratorOf<U> {
+extension LazyList : SequenceType {
+    public func generate() -> GeneratorOf<U> {
         var idx = 0
         return GeneratorOf<U> {
             return self[idx++]
@@ -129,7 +128,7 @@ extension LazyList : Sequence {
     }
 }
 /// placeholder class
-class LazyLists {
+public class LazyLists {
     class var Ints:LazyList<Int,Int> {
     return LazyList (
         maker:  { i, _ in i },
@@ -146,21 +145,21 @@ class LazyLists {
     }
 }
 /// Factory Functions
-func lazylist<T>(seed:[T], maker:(Int,[T])->T?)->LazyList<T,T> {
+public func lazylist<T>(seed:[T], maker:(Int,[T])->T?)->LazyList<T,T> {
     return LazyList (
         maker:  maker,
         seed:   seed,
         mapper: { $0 }
     )
 }
-func lazylist<T>(makerone:Int->T?)->LazyList<T,T> {
+public func lazylist<T>(makerone:Int->T?)->LazyList<T,T> {
     return LazyList (
         maker:  { i, _ in makerone(i) },
         seed:   nil,
         mapper: { $0 }
     )
 }
-func lazylist<T>(seed:[T])->LazyList<T,T> {
+public func lazylist<T>(seed:[T])->LazyList<T,T> {
     return LazyList (
         maker:  nil,
         seed:   seed,
