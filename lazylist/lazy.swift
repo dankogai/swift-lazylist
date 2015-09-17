@@ -120,9 +120,9 @@ public class LazyList<T,U> {
     }
 }
 extension LazyList : SequenceType {
-    public func generate() -> GeneratorOf<U> {
+    public func generate() -> AnyGenerator<U> {
         var idx = 0
-        return GeneratorOf<U> {
+        return anyGenerator {
             return self[idx++]
         }
     }
