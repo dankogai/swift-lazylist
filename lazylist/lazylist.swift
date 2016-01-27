@@ -110,7 +110,7 @@ public class LazyList<T,U> {
         let e = r.endIndex
         return self.drop(b).take(e-b)
     }
-    public  func copy()->LazyList<T,U> {
+    public func copy()->LazyList<T,U> {
         return LazyList<T,U> (
             maker:      self.maker,
             seed:       self.seed,
@@ -125,23 +125,6 @@ extension LazyList : SequenceType {
         return anyGenerator {
             return self[idx++]
         }
-    }
-}
-/// placeholder class
-public class LazyLists {
-    class var Ints:LazyList<Int,Int> {
-    return LazyList (
-        maker:  { i, _ in i },
-        seed:   nil,
-        mapper: { $0 }
-        )
-    }
-    class var UInts:LazyList<UInt,UInt> {
-    return LazyList (
-        maker:  { i, _ in UInt(i) },
-        seed:   nil,
-        mapper: { $0 }
-        )
     }
 }
 /// Factory Functions
@@ -165,4 +148,9 @@ public func lazylist<T>(seed:[T])->LazyList<T,T> {
         seed:   seed,
         mapper: { $0 }
     )
+}
+/// placeholder
+public class LazyLists {
+    public static let ints  = lazylist{ $0 }
+    public static let uints = lazylist{ UInt($0) }
 }

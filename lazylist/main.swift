@@ -7,9 +7,9 @@
 //
 let test = TAP()
 test.eq(lazylist{$0}.take(10), Array(0..<10), "lazylist{$0}.take(10) == Array(0..<10)")
-test.eq(lazylist{$0}.take(10), LazyLists.UInts.map{Int($0)}.take(10),
-    "lazylist{$0}.take(10) == LazyLists.UInt.map{Int($0)}")
-let ints = LazyLists.Ints
+test.eq(lazylist{$0}.take(10), LazyLists.uints.map{Int($0)}.take(10),
+    "lazylist{$0}.take(10) == LazyLists.uints.map{Int($0)}")
+let ints = LazyLists.ints
 test.eq(ints[1_000_000_000_000_000_000], 1_000_000_000_000_000_000,
     "ints[1_000_000_000_000_000_000] == 1_000_000_000_000_000_000")
 test.eq(ints.drop(1_000_000).drop(1_000_000)[0], 2000000,
