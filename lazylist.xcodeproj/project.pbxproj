@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E2ADD401C594C2400A19CE8 /* tap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2ADD3F1C594C2400A19CE8 /* tap.swift */; };
+		9E2ADD421C5957AD00A19CE8 /* lazylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2ADD411C5957AD00A19CE8 /* lazylist.swift */; };
 		9EA758141A0C9F0200B2169B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA758131A0C9F0200B2169B /* main.swift */; };
-		9EA7581B1A0C9F9F00B2169B /* lazy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA7581A1A0C9F9F00B2169B /* lazy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,9 +25,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E2ADD3F1C594C2400A19CE8 /* tap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tap.swift; sourceTree = "<group>"; };
+		9E2ADD411C5957AD00A19CE8 /* lazylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = lazylist.swift; sourceTree = "<group>"; };
 		9EA758101A0C9F0200B2169B /* lazylist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lazylist; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EA758131A0C9F0200B2169B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		9EA7581A1A0C9F9F00B2169B /* lazy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = lazy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				9EA758131A0C9F0200B2169B /* main.swift */,
-				9EA7581A1A0C9F9F00B2169B /* lazy.swift */,
+				9E2ADD411C5957AD00A19CE8 /* lazylist.swift */,
+				9E2ADD3F1C594C2400A19CE8 /* tap.swift */,
 			);
 			path = lazylist;
 			sourceTree = "<group>";
@@ -93,7 +96,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Dan Kogai";
 				TargetAttributes = {
 					9EA7580F1A0C9F0200B2169B = {
@@ -124,7 +127,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EA758141A0C9F0200B2169B /* main.swift in Sources */,
-				9EA7581B1A0C9F9F00B2169B /* lazy.swift in Sources */,
+				9E2ADD421C5957AD00A19CE8 /* lazylist.swift in Sources */,
+				9E2ADD401C594C2400A19CE8 /* tap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +154,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -164,7 +169,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -200,7 +205,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
