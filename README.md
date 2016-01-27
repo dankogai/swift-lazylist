@@ -1,20 +1,12 @@
-swift-lazylist
-==============
+[![build status](https://secure.travis-ci.org/dankogai/swift-lazylist.png)](http://travis-ci.org/dankogai/swift-lazylist)
+
+# swift-lazylist
 
 A Haskell-Like Lazy List in [Swift].
 
 [Swift]: https://developer.apple.com/swift/
 
-
-Prerequisite
-------------
-
-Swift 2.0 or better.
-For Swift 1.x and below check the swift-1.x branch
-(which is no longer maintained)
-
-Synopsis
---------
+## Synopsis
 
 ### Infinite list
 ````swift
@@ -43,11 +35,13 @@ fibs.drop(10).take(10) // [55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181] --
 ````
 ````swift
 let primes = lazylist([2,3]) { i, ps in
-    for var n = ps[i-1] + 1; true; n++ {
+    var n = ps[i-1] + 2
+    while true {
         for p in ps {
             if n % p == 0 { break }
             if p * p > n  { return n }
         }
+        n += 2
     }
 }
 primes.take(25) // first 25 prime numbers -- primes less than 100
@@ -81,3 +75,10 @@ Such lists:
 
 The natural number list example above meets that condition until you apply `.filter()`.
 If you are not sure avoid using enumurator directly.  Just `take()` to get an ordinary array
+
+## Prerequisite
+
+Swift 2.0 or better.
+
+For Swift 1.x and below check the swift-1.x branch
+(which is no longer maintained)
