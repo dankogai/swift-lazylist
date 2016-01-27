@@ -54,11 +54,13 @@ test.ok(m100[100] == nil, "m100[100] is nil")
 let fibs = lazylist([0,1]){ i, a in a[i-2] + a[i-1] }
 test.eq(fibs.drop(5).take(5), [5, 8, 13, 21, 34], "fibs.drop(5).take(5) == [5, 8, 13, 21, 34]")
 let primes = lazylist([2,3]) { i, ps in
-    for var n = ps[i-1] + 1; true; n++ {
+    var n = ps[i-1] + 2
+    while true {
         for p in ps {
             if n % p == 0 { break }
             if p * p > n  { return n }
         }
+        n += 2
     }
 }
 test.eq(primes.filter{$0 > 100}.take(5), [101, 103, 107, 109, 113],
