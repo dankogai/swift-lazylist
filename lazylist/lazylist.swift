@@ -68,7 +68,8 @@ public class LazyList<T,U> {
             var seed = self.seed!
             let need = n + self.offset
             if let maker = self.maker { // fill the seed
-                for var i = 0; result.count < need; i++ {
+                var i = 0
+                while result.count < need {
                     if i == seed.count {
                         if let m = maker(i, seed) {
                             seed.append(m)
@@ -77,22 +78,27 @@ public class LazyList<T,U> {
                         }
                     }
                     if let v = mapper(seed[i]) { result.append(v) }
+                    i += 1
                 }
             } else { // finite so break on broke :-)
-                for var i = 0; result.count < need; i++ {
+                var i = 0
+                while result.count < need {
                     if i == seed.count { break }
                     if let v = mapper(seed[i]) { result.append(v) }
+                    i += 1
                 }
             }
         } else {
             // List without array -- always infinite
             // which is the optimal case. no seed required
-            for var i = self.offset; result.count < n; i++ {
+            var i = self.offset
+            while result.count < n {
                 if let m = self.maker!(i, [T]()) {
                     result.append(mapper(m)!)
                 } else {
                     break
                 }
+                i += 1
             }
             return result
         }
@@ -123,7 +129,9 @@ extension LazyList : SequenceType {
     public func generate() -> AnyGenerator<U> {
         var idx = 0
         return anyGenerator {
-            return self[idx++]
+            let result = self[idx]
+            idx += 1
+            return result
         }
     }
 }
