@@ -1,4 +1,4 @@
-import UIKit    // this is an iOS Playground
+import UIKit    // this is a tvOS Playground
 //: Playground - noun: a place where people can play
 let ints = LazyLists.ints
 ints[1_000_000_000_000_000_000]
