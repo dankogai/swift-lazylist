@@ -30,7 +30,7 @@ test.eq(ints.map{"a\($0)"}.take(10), (0..<10).map{"a\($0)"},
 test.eq(ints.filter{$0%2==0}.filter{$0%3==0}.take(5), (0..<5).map{$0*6},
     "ints.filter{$0%2==0}.filter{$0%3==0}.take(5) == (0..<5).map{$0*6}")
 var d = [Int:Int]()
-for (i,v) in ints.enumerate() {
+for (i,v) in ints.enumerated() {
     if i % 7 != 0 { continue }
     if v > 42 { break }
     d[i] = v

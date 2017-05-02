@@ -5,13 +5,13 @@
 //  Created by Dan Kogai on 7/9/14.
 //  Copyright (c) 2014 Dan Kogai. All rights reserved.
 //
-public class LazyList<T,U> {
-    private let maker:  ((Int, [T])->T?)?
-    private let seed:   [T]?
-    private let mapper: T->U?
-    private let offset: Int
+open class LazyList<T,U> {
+    fileprivate let maker:  ((Int, [T])->T?)?
+    fileprivate let seed:   [T]?
+    fileprivate let mapper: (T)->U?
+    fileprivate let offset: Int
     /// lazy list.  infinite unless maker is nil
-    public init(maker:((Int, [T])->T?)?, seed:[T]?, mapper:T->U?,
+    public init(maker:((Int, [T])->T?)?, seed:[T]?, mapper:@escaping (T)->U?,
         offset:Int = 0, filtered:Bool = false) {
             self.maker  = maker
             self.seed   = seed
@@ -19,7 +19,7 @@ public class LazyList<T,U> {
             self.offset = offset
     }
     /// creates new mapper and installs it
-    public func map<V>(mapper:U->V?)->LazyList<T,V> {
+    open func map<V>(_ mapper:@escaping (U)->V?)->LazyList<T,V> {
         return LazyList<T,V>(
             maker:      maker,
             seed:       seed,
@@ -35,7 +35,7 @@ public class LazyList<T,U> {
     }
     /// installs filter as a mapper
     /// which returns nil on false
-    public func filter(judge:U->Bool)->LazyList<T,U> {
+    open func filter(_ judge:@escaping (U)->Bool)->LazyList<T,U> {
         return LazyList<T,U>(
             maker:  self.maker,
             seed:   {
@@ -52,7 +52,7 @@ public class LazyList<T,U> {
     }
     /// returns a new lazy list with n elements truncated
     /// -- actually it only sets the offset
-    public func drop(n:Int) -> LazyList<T,U> {
+    open func drop(_ n:Int) -> LazyList<T,U> {
         return LazyList<T,U> (
             maker:      self.maker,
             seed:       self.seed,
@@ -62,7 +62,7 @@ public class LazyList<T,U> {
     }
     /// returns an array with upto n elements.
     /// this is where laziness ends
-    public  func take(n:Int)->[U] {
+    open  func take(_ n:Int)->[U] {
         var result:[U] = []
         if self.seed != nil {
             var seed = self.seed!
@@ -106,17 +106,22 @@ public class LazyList<T,U> {
             : Array(result[self.offset..<result.count])
     }
     /// just take(i+1) and return the last element
-    public subscript(i:Int)->U? {
+    open subscript(i:Int)->U? {
         let a = self.drop(i).take(1)
         return a.isEmpty ? nil : a[0]
     }
     /// b..<e -> drop(b) then take (e-b)
-    public  subscript(r:Range<Int>)->[U] {
-        let b = r.startIndex
-        let e = r.endIndex
+    open subscript(r:Range<Int>)->[U] {
+        let b = r.lowerBound
+        let e = r.upperBound
         return self.drop(b).take(e-b)
     }
-    public func copy()->LazyList<T,U> {
+    open subscript(r:ClosedRange<Int>)->[U] {
+        let b = r.lowerBound
+        let e = r.upperBound
+        return self.drop(b).take(e-b+1)
+    }
+    open func copy()->LazyList<T,U> {
         return LazyList<T,U> (
             maker:      self.maker,
             seed:       self.seed,
@@ -125,10 +130,10 @@ public class LazyList<T,U> {
         )
     }
 }
-extension LazyList : SequenceType {
-    public func generate() -> AnyGenerator<U> {
+extension LazyList : Sequence {
+    public func makeIterator() -> AnyIterator<U> {
         var idx = 0
-        return anyGenerator {
+        return AnyIterator {
             let result = self[idx]
             idx += 1
             return result
@@ -136,21 +141,21 @@ extension LazyList : SequenceType {
     }
 }
 /// Factory Functions
-public func lazylist<T>(seed:[T], maker:(Int,[T])->T?)->LazyList<T,T> {
+public func lazylist<T>(_ seed:[T], maker:@escaping (Int,[T])->T?)->LazyList<T,T> {
     return LazyList (
         maker:  maker,
         seed:   seed,
         mapper: { $0 }
     )
 }
-public func lazylist<T>(makerone:Int->T?)->LazyList<T,T> {
+public func lazylist<T>(_ makerone:@escaping (Int)->T?)->LazyList<T,T> {
     return LazyList (
         maker:  { i, _ in makerone(i) },
         seed:   nil,
         mapper: { $0 }
     )
 }
-public func lazylist<T>(seed:[T])->LazyList<T,T> {
+public func lazylist<T>(_ seed:[T])->LazyList<T,T> {
     return LazyList (
         maker:  nil,
         seed:   seed,
@@ -158,7 +163,7 @@ public func lazylist<T>(seed:[T])->LazyList<T,T> {
     )
 }
 /// placeholder
-public class LazyLists {
-    public static let ints  = lazylist{ $0 }
-    public static let uints = lazylist{ UInt($0) }
+open class LazyLists {
+    open static let ints  = lazylist{ $0 }
+    open static let uints = lazylist{ UInt($0) }
 }

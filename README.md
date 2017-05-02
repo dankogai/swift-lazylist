@@ -78,7 +78,4 @@ If you are not sure avoid using enumurator directly.  Just `take()` to get an or
 
 ## Prerequisite
 
-Swift 2.0 or better.
-
-For Swift 1.x and below check the swift-1.x branch
-(which is no longer maintained)
+Swift 3 or better.

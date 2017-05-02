@@ -17,3 +17,5 @@ let primes = lazylist([2,3]) { i, ps in
 let ps = primes.filter{ $0 % 4 == 3 }
 ps.take(10)
 
+let r = 0...2
+let r2 = 0..<2
