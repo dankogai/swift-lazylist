@@ -62,7 +62,7 @@ open class LazyList<T,U> {
     }
     /// returns an array with upto n elements.
     /// this is where laziness ends
-    open  func take(_ n:Int)->[U] {
+    open func take(_ n:Int)->[U] {
         var result:[U] = []
         if self.seed != nil {
             var seed = self.seed!
