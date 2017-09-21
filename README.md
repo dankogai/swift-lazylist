@@ -79,4 +79,4 @@ If you are not sure avoid using enumurator directly.  Just `take()` to get an or
 
 ## Prerequisite
 
-Swift 3 or better.
+Swift 4 or better.
